@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODEX_TERMINAL_v3 | BLKOUT-TC</title>
+    <title>THE COLLECTIVE AUTO | G-SN 1107</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=JetBrains+Mono:wght@300;700&display=swap');
@@ -22,7 +22,7 @@
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             pointer-events: none;
-            z-index: 50;
+            z-index: 100;
         }
 
         .glitch-text {
@@ -39,41 +39,58 @@
             100% { transform: translate(0); }
         }
 
-        #terminal-history::-webkit-scrollbar {
-            width: 4px;
+        #terminal-history::-webkit-scrollbar { width: 4px; }
+        #terminal-history::-webkit-scrollbar-track { background: #000; }
+        #terminal-history::-webkit-scrollbar-thumb { background: #052e16; }
+
+        .hero-bg {
+            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://img1.wsimg.com/isteam/ip/e3bf225c-cc87-4dbd-9523-dc8b08708761/The%20Collective%20Auto%20Logo.png');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
         }
-        #terminal-history::-webkit-scrollbar-track {
-            background: #000;
-        }
-        #terminal-history::-webkit-scrollbar-thumb {
-            background: #052e16;
-        }
+        
+        .fade-out { animation: fadeOut 1.5s forwards; }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
     </style>
 </head>
 <body class="bg-black min-h-screen">
     <div class="scanlines"></div>
 
-    <!-- Countdown Overlay (Pre-Live) -->
-    <div id="countdown-screen" class="fixed inset-0 z-40 bg-black flex items-center justify-center p-4">
-        <div class="text-center">
-            <div class="text-xs opacity-50 mb-4 animate-pulse tracking-[0.3em] uppercase">Collective Auto Secure Uplink Pending...</div>
-            <div id="timer" class="text-4xl md:text-7xl font-bold tracking-tighter text-green-500 font-mono">
+    <!-- Hero / Countdown Screen -->
+    <div id="countdown-screen" class="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center p-4 transition-opacity duration-1000">
+        <div class="hero-bg absolute inset-0 opacity-30"></div>
+        <div class="relative z-10 text-center">
+            <div class="text-[10px] opacity-40 mb-8 animate-pulse tracking-[0.5em] uppercase text-green-500">Sovereign Node Uplink Pending</div>
+            
+            <div id="timer" class="text-5xl md:text-8xl font-bold tracking-tighter text-white font-mono mb-4">
                 00D:00H:00M:00S
             </div>
-            <div class="mt-6 text-green-900 text-[10px] uppercase tracking-[0.4em] font-bold">Sovereign Node Synchronization in Progress</div>
+            
+            <div class="space-y-2">
+                <div class="text-green-900 text-[10px] uppercase tracking-[0.4em] font-bold">333 Acres of Unrestricted Asphalt</div>
+                <div class="text-green-900 text-[10px] uppercase tracking-[0.4em] font-bold">Private Territory. Members Only.</div>
+            </div>
+
+            <div class="mt-12 flex gap-6 justify-center opacity-50">
+                <a href="https://www.youtube.com/@thecollectiveauto" target="_blank" class="text-white hover:text-green-500 transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                </a>
+                <a href="https://www.instagram.com/thecollectiveauto/" target="_blank" class="text-white hover:text-green-500 transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                </a>
+            </div>
         </div>
     </div>
 
-    <!-- Terminal Interface (Live) -->
-    <div id="terminal-screen" class="hidden fixed inset-0 z-30 flex flex-col p-6 max-w-5xl mx-auto w-full">
+    <!-- Terminal Interface -->
+    <div id="terminal-screen" class="opacity-0 fixed inset-0 z-40 flex flex-col p-6 max-w-5xl mx-auto w-full transition-opacity duration-1000">
         <div class="mb-8 border-b border-green-900 pb-2 flex justify-between items-end">
             <h1 class="text-xl font-bold tracking-widest text-green-400 glitch-text">CODEX_TERMINAL_v3</h1>
             <span class="text-[10px] text-green-800 animate-pulse">STATUS: ONLINE</span>
         </div>
         
-        <div id="terminal-history" class="space-y-1 mb-4 overflow-y-auto flex-grow text-sm pr-4">
-            <!-- History items will be injected here -->
-        </div>
+        <div id="terminal-history" class="space-y-1 mb-4 overflow-y-auto flex-grow text-sm pr-4"></div>
 
         <div class="flex items-center text-lg pt-4 border-t border-green-900">
             <span id="prompt-label" class="mr-2 text-green-400">></span>
@@ -81,15 +98,13 @@
                 id="terminal-input"
                 type="text"
                 class="bg-transparent border-none flex-grow text-green-400 font-mono uppercase focus:outline-none"
-                autoFocus
                 autocomplete="off"
             />
         </div>
     </div>
 
     <script>
-        // TARGET DATE: May 24, 2024 (Adjusted for the 3-day countdown mentioned by user)
-        // Based on today's date (Apr 26, 2026), let's set it to 3 days from now
+        // TARGET DATE: 3 days from now
         const TARGET_DATE = new Date();
         TARGET_DATE.setDate(TARGET_DATE.getDate() + 3);
         const TARGET_TIME = TARGET_DATE.getTime();
@@ -115,11 +130,8 @@
             const now = Date.now();
             const distance = TARGET_TIME - now;
 
-            if (distance <= 0) {
-                isLive = true;
-                countdownScreen.classList.add('hidden');
-                terminalScreen.classList.remove('hidden');
-                inputEl.focus();
+            if (distance <= 0 && !isLive) {
+                goLive();
                 return true;
             }
 
@@ -132,16 +144,26 @@
             return false;
         }
 
+        function goLive() {
+            isLive = true;
+            countdownScreen.classList.add('fade-out');
+            setTimeout(() => {
+                countdownScreen.style.display = 'none';
+                terminalScreen.classList.remove('opacity-0');
+                terminalScreen.classList.add('opacity-100');
+                inputEl.focus();
+                addHistory('success', 'UPLINK ESTABLISHED. WELCOME TO THE COLLECTIVE.');
+            }, 1500);
+        }
+
         function renderHistory() {
             historyEl.innerHTML = '';
             history.forEach(line => {
                 const div = document.createElement('div');
-                if (line.type === 'error') div.className = 'text-red-500';
-                else if (line.type === 'success') div.className = 'text-cyan-400';
-                else if (line.type === 'warning') div.className = 'text-yellow-500';
-                else if (line.type === 'info') div.className = 'text-blue-400';
-                else if (line.type === 'user') div.className = 'text-green-300';
-                
+                div.className = line.type === 'error' ? 'text-red-500' : 
+                                line.type === 'success' ? 'text-cyan-400' : 
+                                line.type === 'warning' ? 'text-yellow-500' : 
+                                line.type === 'info' ? 'text-blue-400' : 'text-green-300';
                 div.innerText = line.text;
                 historyEl.appendChild(div);
             });
@@ -162,10 +184,7 @@
                 if (awaitingKey) {
                     if (cmd === 'GHOST IN THE MACHINE' || cmd === 'LOST AND FOUND') {
                         addHistory('success', 'ACCESS GRANTED. SOVEREIGN NODE 001 UNLOCKED.');
-                        addHistory('system', 'REDIRECTING TO SECURE OPERATOR DASHBOARD...');
-                        setTimeout(() => {
-                            window.location.href = 'https://colhorizon-m9clvtso.manus.space/';
-                        }, 2000);
+                        setTimeout(() => window.location.href = 'https://colhorizon-m9clvtso.manus.space/', 1500);
                     } else if (cmd === 'CANCEL') {
                         addHistory('system', 'SEARCH CANCELLED.');
                         awaitingKey = false;
@@ -176,14 +195,15 @@
                 } else {
                     switch (cmd) {
                         case 'HELP':
-                            addHistory('info', 'AVAILABLE COMMANDS: PLAY, SEARCH, CLEAR_MEDIA, BLACKOUT, OPS_LOGIN, CLEAR');
+                            addHistory('info', 'COMMANDS: PLAY, SEARCH, YOUTUBE, OPS_LOGIN, CLEAR');
+                            break;
+                        case 'YOUTUBE':
+                            addHistory('system', 'OPENING SECURE MEDIA STREAM...');
+                            window.open('https://www.youtube.com/@thecollectiveauto', '_blank');
                             break;
                         case 'PLAY':
                             addHistory('system', 'LOADING MEDIA PAYLOAD...');
-                            window.open('https://zacharyemahaffey-ops.github.io/THECOLLECTIVEAUTOmedia', '_blank');
-                            break;
-                        case 'BLACKOUT':
-                            addHistory('system', 'RE-INITIALIZING BLACKOUT SEQUENCE...');
+                            window.location.href = 'https://zacharyemahaffey-ops.github.io/THECOLLECTIVEAUTOmedia/';
                             break;
                         case 'OPS_LOGIN':
                             addHistory('system', 'ACCESSING OPERATOR HUB...');
@@ -204,6 +224,9 @@
                 }
             }
         });
+
+        // Debug: Allow manual "Live" trigger by clicking timer
+        timerEl.addEventListener('click', goLive);
 
         const timerInterval = setInterval(() => {
             if (updateTimer()) clearInterval(timerInterval);
