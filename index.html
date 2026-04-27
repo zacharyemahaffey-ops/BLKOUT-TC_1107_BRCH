@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODEX_TERMINAL_v3 | BLKOUT-TC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=JetBrains+Mono:wght@300;700&display=swap');
+        
+        body {
+            background-color: black;
+            color: #22c55e;
+            font-family: 'JetBrains Mono', monospace;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .glitch-text {
+            text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff;
+            animation: glitch 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        #terminal-history::-webkit-scrollbar {
+            width: 4px;
+        }
+        #terminal-history::-webkit-scrollbar-track {
+            background: #000;
+        }
+        #terminal-history::-webkit-scrollbar-thumb {
+            background: #052e16;
+        }
+    </style>
+</head>
+<body class="bg-black min-h-screen">
+    <div class="scanlines"></div>
+
+    <!-- Countdown Overlay (Pre-Live) -->
+    <div id="countdown-screen" class="fixed inset-0 z-40 bg-black flex items-center justify-center p-4">
+        <div class="text-center">
+            <div class="text-xs opacity-50 mb-4 animate-pulse tracking-[0.3em] uppercase">Collective Auto Secure Uplink Pending...</div>
+            <div id="timer" class="text-4xl md:text-7xl font-bold tracking-tighter text-green-500 font-mono">
+                00D:00H:00M:00S
+            </div>
+            <div class="mt-6 text-green-900 text-[10px] uppercase tracking-[0.4em] font-bold">Sovereign Node Synchronization in Progress</div>
+        </div>
+    </div>
+
+    <!-- Terminal Interface (Live) -->
+    <div id="terminal-screen" class="hidden fixed inset-0 z-30 flex flex-col p-6 max-w-5xl mx-auto w-full">
+        <div class="mb-8 border-b border-green-900 pb-2 flex justify-between items-end">
+            <h1 class="text-xl font-bold tracking-widest text-green-400 glitch-text">CODEX_TERMINAL_v3</h1>
+            <span class="text-[10px] text-green-800 animate-pulse">STATUS: ONLINE</span>
+        </div>
+        
+        <div id="terminal-history" class="space-y-1 mb-4 overflow-y-auto flex-grow text-sm pr-4">
+            <!-- History items will be injected here -->
+        </div>
+
+        <div class="flex items-center text-lg pt-4 border-t border-green-900">
+            <span id="prompt-label" class="mr-2 text-green-400">></span>
+            <input
+                id="terminal-input"
+                type="text"
+                class="bg-transparent border-none flex-grow text-green-400 font-mono uppercase focus:outline-none"
+                autoFocus
+                autocomplete="off"
+            />
+        </div>
+    </div>
+
+    <script>
+        // TARGET DATE: May 24, 2024 (Adjusted for the 3-day countdown mentioned by user)
+        // Based on today's date (Apr 26, 2026), let's set it to 3 days from now
+        const TARGET_DATE = new Date();
+        TARGET_DATE.setDate(TARGET_DATE.getDate() + 3);
+        const TARGET_TIME = TARGET_DATE.getTime();
+
+        let isLive = false;
+        let awaitingKey = false;
+        const history = [
+            { type: 'system', text: 'INITIALIZING COLLECTIVE OS v3.0.1...' },
+            { type: 'system', text: 'CONNECTING TO SOVEREIGN NODE...' },
+            { type: 'system', text: 'WARNING: REALITY ANOMALY DETECTED.' },
+            { type: 'system', text: 'MULTI-REPO ARCHITECTURE DETECTED: [CLEAR], [BLACKOUT], [OPS]' },
+            { type: 'system', text: 'TYPE "HELP" TO BEGIN.' },
+        ];
+
+        const historyEl = document.getElementById('terminal-history');
+        const inputEl = document.getElementById('terminal-input');
+        const promptLabel = document.getElementById('prompt-label');
+        const countdownScreen = document.getElementById('countdown-screen');
+        const terminalScreen = document.getElementById('terminal-screen');
+        const timerEl = document.getElementById('timer');
+
+        function updateTimer() {
+            const now = Date.now();
+            const distance = TARGET_TIME - now;
+
+            if (distance <= 0) {
+                isLive = true;
+                countdownScreen.classList.add('hidden');
+                terminalScreen.classList.remove('hidden');
+                inputEl.focus();
+                return true;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            timerEl.innerText = `${String(days).padStart(2, '0')}D:${String(hours).padStart(2, '0')}H:${String(minutes).padStart(2, '0')}M:${String(seconds).padStart(2, '0')}S`;
+            return false;
+        }
+
+        function renderHistory() {
+            historyEl.innerHTML = '';
+            history.forEach(line => {
+                const div = document.createElement('div');
+                if (line.type === 'error') div.className = 'text-red-500';
+                else if (line.type === 'success') div.className = 'text-cyan-400';
+                else if (line.type === 'warning') div.className = 'text-yellow-500';
+                else if (line.type === 'info') div.className = 'text-blue-400';
+                else if (line.type === 'user') div.className = 'text-green-300';
+                
+                div.innerText = line.text;
+                historyEl.appendChild(div);
+            });
+            historyEl.scrollTop = historyEl.scrollHeight;
+        }
+
+        function addHistory(type, text) {
+            history.push({ type, text });
+            renderHistory();
+        }
+
+        inputEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = inputEl.value.trim().toUpperCase();
+                addHistory('user', `> ${cmd}`);
+                inputEl.value = '';
+
+                if (awaitingKey) {
+                    if (cmd === 'GHOST IN THE MACHINE' || cmd === 'LOST AND FOUND') {
+                        addHistory('success', 'ACCESS GRANTED. SOVEREIGN NODE 001 UNLOCKED.');
+                        addHistory('system', 'REDIRECTING TO SECURE OPERATOR DASHBOARD...');
+                        setTimeout(() => {
+                            window.location.href = 'https://colhorizon-m9clvtso.manus.space/';
+                        }, 2000);
+                    } else if (cmd === 'CANCEL') {
+                        addHistory('system', 'SEARCH CANCELLED.');
+                        awaitingKey = false;
+                        promptLabel.innerText = '>';
+                    } else {
+                        addHistory('error', 'INVALID KEY.');
+                    }
+                } else {
+                    switch (cmd) {
+                        case 'HELP':
+                            addHistory('info', 'AVAILABLE COMMANDS: PLAY, SEARCH, CLEAR_MEDIA, BLACKOUT, OPS_LOGIN, CLEAR');
+                            break;
+                        case 'PLAY':
+                            addHistory('system', 'LOADING MEDIA PAYLOAD...');
+                            window.open('https://zacharyemahaffey-ops.github.io/THECOLLECTIVEAUTOmedia', '_blank');
+                            break;
+                        case 'BLACKOUT':
+                            addHistory('system', 'RE-INITIALIZING BLACKOUT SEQUENCE...');
+                            break;
+                        case 'OPS_LOGIN':
+                            addHistory('system', 'ACCESSING OPERATOR HUB...');
+                            window.location.href = 'https://zacharyemahaffey-ops.github.io/THECOLLECTIVEAUTOOPS/';
+                            break;
+                        case 'SEARCH':
+                            addHistory('warning', 'ENTER SOVEREIGN KEY:');
+                            awaitingKey = true;
+                            promptLabel.innerText = '[KEY]:';
+                            break;
+                        case 'CLEAR':
+                            history.length = 0;
+                            renderHistory();
+                            break;
+                        default:
+                            addHistory('error', `COMMAND NOT RECOGNIZED: ${cmd}`);
+                    }
+                }
+            }
+        });
+
+        const timerInterval = setInterval(() => {
+            if (updateTimer()) clearInterval(timerInterval);
+        }, 1000);
+
+        renderHistory();
+        updateTimer();
+    </script>
+</body>
+</html>
